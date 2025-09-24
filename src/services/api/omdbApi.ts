@@ -5,7 +5,7 @@
 
 import axios from 'axios';
 import type { MovieDetails, SearchResponse } from '@/services/types/movie';
-import { MOCK_MOVIE_DATA, MOCK_SEARCH_RESULTS, getMockMovieById, mockSearchMovies } from '@/utils/mockData';
+import { MOCK_MOVIE_DATA, MOCK_SEARCH_RESULTS, getMockMovieById, mockSearchMovies } from '../../utils/mockData';
 
 // API ключи (используем ваш личный ключ)
 const API_KEYS = ['20005ff3'];

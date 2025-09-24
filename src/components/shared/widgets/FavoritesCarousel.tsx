@@ -181,8 +181,6 @@ const FavoritesCarousel: React.FC<FavoritesCarouselProps> = ({
   autoplayInterval = 3000,
   className = ''
 }) => {
-
-
   // Если нет избранных фильмов, показываем сообщение
   if (favorites.length === 0) {
     return (
