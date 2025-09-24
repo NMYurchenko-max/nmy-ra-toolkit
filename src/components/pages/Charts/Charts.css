@@ -1,0 +1,243 @@
+/* Стили для страницы графиков фильмов */
+
+/* Основной контейнер страницы */
+.charts-page {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Заголовок страницы */
+.charts-header {
+  margin-bottom: 2rem;
+}
+
+.charts-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.charts-subtitle {
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+/* Сетка карточек */
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+.charts-card {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* Контейнер статистики */
+.stats-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Элемент статистики */
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.stat-label {
+  min-width: 4rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.stat-bar-container {
+  flex: 1;
+  background-color: #e5e7eb;
+  border-radius: 9999px;
+  height: 0.5rem;
+  overflow: hidden;
+}
+
+.stat-bar {
+  height: 100%;
+  border-radius: inherit;
+  transition: width 0.3s ease;
+}
+
+.stat-bar-primary {
+  background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+.stat-bar-success {
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+}
+
+.stat-bar-info {
+  background: linear-gradient(90deg, #06b6d4 0%, #0891b2 100%);
+}
+
+.stat-value {
+  min-width: 2rem;
+  text-align: right;
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Сообщение об отсутствии данных */
+.no-data {
+  text-align: center;
+  color: #6b7280;
+  padding: 1rem;
+  font-style: italic;
+}
+
+/* Общая статистика */
+.summary-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.stat-card {
+  text-align: center;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  color: white;
+}
+
+.stat-card-blue {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.stat-card-green {
+  background-color: #d1fae5;
+  color: #047857;
+}
+
+.stat-card-purple {
+  background-color: #e9d5ff;
+  color: #7c3aed;
+}
+
+.stat-card-orange {
+  background-color: #fed7aa;
+  color: #c2410c;
+}
+
+.stat-number {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.stat-card .stat-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  min-width: auto;
+}
+
+/* Популярный год */
+.popular-year {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: #f9fafb;
+  border-radius: 0.375rem;
+}
+
+.popular-year-title {
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.popular-year-value {
+  font-size: 1.125rem;
+  color: #1f2937;
+  margin: 0;
+}
+
+/* Текущий фильм */
+.current-movie {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.current-movie-poster {
+  width: 4rem;
+  height: 4rem;
+  object-fit: cover;
+  border-radius: 0.375rem;
+}
+
+.no-poster {
+  width: 4rem;
+  height: 4rem;
+  background-color: #e5e7eb;
+  border-radius: 0.375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.current-movie-info {
+  flex: 1;
+}
+
+.current-movie-title {
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.current-movie-year {
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .charts-page {
+    padding: 1rem;
+  }
+
+  .charts-title {
+    font-size: 1.875rem;
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .stat-bar-container {
+    width: 100%;
+  }
+
+  .current-movie {
+    flex-direction: column;
+    text-align: center;
+  }
+}
