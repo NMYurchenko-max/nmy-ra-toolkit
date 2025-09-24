@@ -3,32 +3,9 @@
  * @module examples/usageExamples
  */
 
-import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import type { RootState } from '@/redux/store/store';
 import type { Movie } from '@/services/types/movie';
 
-/**
- * Демонстрационный компонент для проверки импортов
- * @returns JSX элемент
- */
-export const DemoComponent = () => {
-  const [count, setCount] = useState(0);
-  const favorites = useSelector((state: RootState) => state.favorites?.items || []);
 
-  useEffect(() => {
-    console.log('Demo component mounted');
-  }, []);
-
-  return (
-    <div>
-      <h2>Демонстрационный компонент</h2>
-      <p>Счетчик: {count}</p>
-      <button onClick={() => setCount(count + 1)}>Увеличить</button>
-      <p>Избранных фильмов: {favorites.length}</p>
-    </div>
-  );
-};
 
 /**
  * Пример 1: Использование данных для карусели

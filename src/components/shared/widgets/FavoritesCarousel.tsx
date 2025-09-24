@@ -181,46 +181,7 @@ const FavoritesCarousel: React.FC<FavoritesCarouselProps> = ({
   autoplayInterval = 3000,
   className = ''
 }) => {
-  /**
-   * Настройки карусели
-   * @description
-   * Конфигурация PrimeReact Carousel с адаптивными настройками.
-   */
-  const carouselSettings = {
-    value: favorites,
-    numVisible: 4,
-    numScroll: 1,
-    autoplay,
-    autoplayInterval,
-    circular: true,
-    showDots: true,
-    showNavigators: true,
-    itemTemplate: (movie: Movie) => movieTemplate(movie, {
-      favorites,
-      onMovieClick,
-      onRemoveFromFavorites,
-      autoplay,
-      autoplayInterval,
-      className
-    }),
-    responsiveOptions: [
-      {
-        breakpoint: '1024px',
-        numVisible: 3,
-        numScroll: 1
-      },
-      {
-        breakpoint: '768px',
-        numVisible: 2,
-        numScroll: 1
-      },
-      {
-        breakpoint: '480px',
-        numVisible: 1,
-        numScroll: 1
-      }
-    ]
-  };
+
 
   // Если нет избранных фильмов, показываем сообщение
   if (favorites.length === 0) {
@@ -243,7 +204,37 @@ const FavoritesCarousel: React.FC<FavoritesCarouselProps> = ({
         <i className="pi pi-heart"></i>
         Мои избранные фильмы
       </h2>
-      <Carousel {...carouselSettings} />
+      <Carousel
+        value={favorites}
+        numVisible={4}
+        numScroll={1}
+        circular={true}
+        itemTemplate={(movie: Movie) => movieTemplate(movie, {
+          favorites,
+          onMovieClick,
+          onRemoveFromFavorites,
+          autoplay,
+          autoplayInterval,
+          className
+        })}
+        responsiveOptions={[
+          {
+            breakpoint: '1024px',
+            numVisible: 3,
+            numScroll: 1
+          },
+          {
+            breakpoint: '768px',
+            numVisible: 2,
+            numScroll: 1
+          },
+          {
+            breakpoint: '480px',
+            numVisible: 1,
+            numScroll: 1
+          }
+        ]}
+      />
     </div>
   );
 };
