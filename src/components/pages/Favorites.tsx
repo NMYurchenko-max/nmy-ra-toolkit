@@ -25,12 +25,16 @@
  * ```
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { ToggleButton } from 'primereact/togglebutton';
 import { useFavorites } from '@/hooks/useFavorites';
+import FavoritesCarousel from '@/components/shared/widgets/FavoritesCarousel';
+import '@/components/shared/widgets/FavoritesCarousel.css';
+import type { Movie } from '@/services/types/movie';
 
 /**
  * Страница с избранными фильмами
@@ -59,6 +63,7 @@ import { useFavorites } from '@/hooks/useFavorites';
  */
 const Favorites: React.FC = () => {
   const navigate = useNavigate();
+  const [viewMode, setViewMode] = useState<'grid' | 'carousel'>('carousel');
   const {
     favorites,
     removeFavorite,
@@ -125,6 +130,37 @@ const Favorites: React.FC = () => {
     });
   };
 
+  /**
+   * Обрабатывает клик по фильму в карусели
+   * @function handleCarouselMovieClick
+   * @description
+   * Переходит к странице детального просмотра фильма из карусели.
+   *
+   * @param {Movie} movie - Объект фильма для навигации
+   *
+   * @example
+   * handleCarouselMovieClick(movie); // Перейдёт к /movie/{movie.imdbID}
+   */
+  const handleCarouselMovieClick = (movie: Movie) => {
+    navigate(`/movie/${movie.imdbID}`);
+  };
+
+  /**
+   * Обрабатывает удаление фильма из избранного в карусели
+   * @function handleCarouselRemoveFavorite
+   * @description
+   * Удаляет фильм из избранного без дополнительного подтверждения
+   * (поскольку карусель уже имеет встроенную кнопку удаления).
+   *
+   * @param {Movie} movie - Объект фильма для удаления
+   *
+   * @example
+   * handleCarouselRemoveFavorite(movie); // Удалит фильм из избранного
+   */
+  const handleCarouselRemoveFavorite = (movie: Movie) => {
+    removeFavorite(movie.imdbID);
+  };
+
   return (
     <div className="space-y-8">
       {/**
@@ -178,16 +214,32 @@ const Favorites: React.FC = () => {
             </p>
           </div>
 
-          {favorites.length > 0 && (
-            <Button
-              label="Очистить все"
-              icon="pi pi-trash"
-              severity="danger"
-              outlined
-              onClick={handleClearAll}
-              className="border-2 border-red-300 hover:border-red-400 hover:bg-red-50 transition-all duration-200"
-            />
-          )}
+          <div className="flex items-center gap-4">
+            {favorites.length > 0 && (
+              <>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-gray-600">Вид:</span>
+                  <ToggleButton
+                    checked={viewMode === 'carousel'}
+                    onChange={(e) => setViewMode(e.value ? 'carousel' : 'grid')}
+                    onLabel="Карусель"
+                    offLabel="Сетка"
+                    onIcon="pi pi-images"
+                    offIcon="pi pi-th-large"
+                    className="p-button-sm"
+                  />
+                </div>
+                <Button
+                  label="Очистить все"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  outlined
+                  onClick={handleClearAll}
+                  className="border-2 border-red-300 hover:border-red-400 hover:bg-red-50 transition-all duration-200"
+                />
+              </>
+            )}
+          </div>
         </div>
       </Card>
 
@@ -210,75 +262,87 @@ const Favorites: React.FC = () => {
           </div>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
-          {favorites.map((movie) => (
-            <Card
-              key={movie.imdbID}
-              className="relative hover:shadow-2xl transition-all duration-300 transform hover:scale-105 border-0 overflow-hidden group"
-            >
-              {/* Кнопка удаления */}
-              <div className="absolute top-3 right-3 z-20">
-                <Button
-                  icon="pi pi-heart-fill"
-                  severity="danger"
-                  size="small"
-                  rounded
-                  text
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleRemoveFavorite(movie.imdbID, movie.Title);
-                  }}
-                  tooltip="Удалить из избранного"
-                  tooltipOptions={{ position: 'left' }}
-                  className="bg-red-500 hover:bg-red-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-110"
-                />
-              </div>
+        <>
+          {viewMode === 'carousel' ? (
+            <FavoritesCarousel
+              favorites={favorites}
+              onMovieClick={handleCarouselMovieClick}
+              onRemoveFromFavorites={handleCarouselRemoveFavorite}
+              autoplay={true}
+              autoplayInterval={4000}
+            />
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+              {favorites.map((movie) => (
+                <Card
+                  key={movie.imdbID}
+                  className="relative hover:shadow-2xl transition-all duration-300 transform hover:scale-105 border-0 overflow-hidden group"
+                >
+                  {/* Кнопка удаления */}
+                  <div className="absolute top-3 right-3 z-20">
+                    <Button
+                      icon="pi pi-heart-fill"
+                      severity="danger"
+                      size="small"
+                      rounded
+                      text
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemoveFavorite(movie.imdbID, movie.Title);
+                      }}
+                      tooltip="Удалить из избранного"
+                      tooltipOptions={{ position: 'left' }}
+                      className="bg-red-500 hover:bg-red-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-110"
+                    />
+                  </div>
 
-              <div
-                className="cursor-pointer"
-                onClick={() => handleMovieClick(movie.imdbID)}
-              >
-                <div className="space-y-4">
-                  {movie.Poster && movie.Poster !== 'N/A' ? (
-                    <div className="relative overflow-hidden rounded-xl">
-                      <img
-                        src={movie.Poster}
-                        alt={movie.Title}
-                        className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
-                        <div className="p-4 text-white">
-                          <p className="text-sm font-medium text-black bg-white/90 px-2 py-1 rounded">Подробнее</p>
+                  <div
+                    className="cursor-pointer"
+                    onClick={() => handleMovieClick(movie.imdbID)}
+                  >
+                    <div className="space-y-4">
+                      {movie.Poster && movie.Poster !== 'N/A' ? (
+                        <div className="relative overflow-hidden rounded-xl">
+                          <img
+                            src={movie.Poster}
+                            alt={movie.Title}
+                            className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-300"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                            <div className="p-4 text-white">
+                              <p className="text-sm font-medium text-black bg-white/90 px-2 py-1 rounded">Подробнее</p>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="w-full h-72 bg-gradient-to-br from-red-100 to-pink-100 rounded-xl flex items-center justify-center">
+                          <div className="text-center">
+                            <span className="text-4xl mb-2 block">🎬</span>
+                            <span className="text-gray-600 font-medium">Постер недоступен</span>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="p-2">
+                        <h4 className="font-bold text-lg line-clamp-2 mb-2 group-hover:text-red-600 transition-colors">
+                          {movie.Title}
+                        </h4>
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full">
+                            {movie.Year}
+                          </span>
+                          <span className="bg-pink-100 text-pink-800 px-2 py-1 rounded-full capitalize">
+                            {movie.Type}
+                          </span>
                         </div>
                       </div>
                     </div>
-                  ) : (
-                    <div className="w-full h-72 bg-gradient-to-br from-red-100 to-pink-100 rounded-xl flex items-center justify-center">
-                      <div className="text-center">
-                        <span className="text-4xl mb-2 block">🎬</span>
-                        <span className="text-gray-600 font-medium">Постер недоступен</span>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="p-2">
-                    <h4 className="font-bold text-lg line-clamp-2 mb-2 group-hover:text-red-600 transition-colors">
-                      {movie.Title}
-                    </h4>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full">
-                        {movie.Year}
-                      </span>
-                      <span className="bg-pink-100 text-pink-800 px-2 py-1 rounded-full capitalize">
-                        {movie.Type}
-                      </span>
-                    </div>
                   </div>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
+                </Card>
+              ))}
+            </div>
+          )}
+        </>
       )}
 
       <ConfirmDialog />

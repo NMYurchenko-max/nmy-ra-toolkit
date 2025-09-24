@@ -26,7 +26,6 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@types/slick-carousel": "^1.6.40",
     "axios": "^1.12.2",
     "primeflex": "^4.0.0",
     "primeicons": "^7.0.0",

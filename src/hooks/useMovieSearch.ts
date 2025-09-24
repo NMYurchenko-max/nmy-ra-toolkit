@@ -39,7 +39,7 @@ import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '@/redux/store/store';
 import type { Movie } from '@/services/types/movie';
-import { searchMoviesAsync, clearMovies, setCurrentPage } from '@/redux/slices/moviesSlice';
+import { searchMoviesAsync, clearMovies, setCurrentPage, getMovieDetailsAsync } from '@/redux/slices/moviesSlice';
 import { setSearchQuery, addRecentSearch } from '@/redux/slices/searchSlice';
 
 /**
@@ -151,8 +151,21 @@ export const useMovieSearch = (): UseMovieSearchReturn => {
     dispatch(addRecentSearch(searchQuery));
 
     try {
-      const result = await dispatch(searchMoviesAsync({ query: searchQuery, page })).unwrap();
-      return result;
+      // Проверяем, если запрос похож на IMDb ID, используем getMovieDetailsAsync
+      const imdbIdPattern = /^tt\d{7,8}$/i;
+      if (imdbIdPattern.test(searchQuery.trim())) {
+        const result = await dispatch(getMovieDetailsAsync(searchQuery.trim())).unwrap();
+        // Возвращаем результат в формате, совместимом с searchMoviesAsync
+        return {
+          movies: result ? [result] : [],
+          totalResults: result ? 1 : 0,
+          query: searchQuery,
+          page,
+        };
+      } else {
+        const result = await dispatch(searchMoviesAsync({ query: searchQuery, page })).unwrap();
+        return result;
+      }
     } catch (error) {
       console.error('Search failed:', error);
       throw error;
